@@ -1,11 +1,19 @@
 import { prisma } from "../config/db.js";
+import { signupSchema, signinSchema } from "../validators/authValidators.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
 dotenv.config();
 
 export async function signup(req, res) {
-  const { name, email, password } = req.body;
+  const payload = req.body;
+  const result = signupSchema.safeParse(payload);
+  if (!result.success) {
+    return res.status(400).json({
+      message: "invalid inputs",
+    });
+  }
+  const { name, email, password } = payload;
 
   try {
     const hashedPassword = await bcrypt.hash(password, 10);
@@ -31,6 +39,13 @@ export async function signup(req, res) {
 }
 
 export async function signin(req, res) {
+  const payload = req.body;
+  const result = signinSchema.safeParse(payload);
+  if (!result.success) {
+    return res.status(400).json({
+      msg: "invalid inputs",
+    });
+  }
   const { email, password } = req.body;
 
   try {
