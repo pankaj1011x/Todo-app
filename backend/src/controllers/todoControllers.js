@@ -22,7 +22,7 @@ export async function createTodo(req, res) {
       },
     });
     return res.status(201).json({
-      id: todo.id,
+      todo,
       msg: "todo created successfully",
     });
   } catch (err) {
@@ -41,11 +41,12 @@ export async function getTodos(req, res) {
         title: true,
         description: true,
         id: true,
-        user: {
-          select: {
-            name: true,
-          },
-        },
+        done: true,
+        userId: true,
+        createdAt: true,
+      },
+      orderBy: {
+        createdAt: "asc",
       },
     });
     return res.json({
@@ -68,6 +69,7 @@ export async function updateTodo(req, res) {
   const updatedData = {};
   if (payload.title) updatedData.title = payload.title;
   if (payload.description) updatedData.description = payload.description;
+  if (payload.done) updatedData.done = payload.done;
   const { id } = req.params;
 
   try {
@@ -96,6 +98,7 @@ export async function deleteTodo(req, res) {
         userId: req.id,
       },
     });
+
     return res.status(204).json({
       message: "todo deleted successfully",
     });

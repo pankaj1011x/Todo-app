@@ -8,4 +8,5 @@ export const createTodoSchema = z.object({
 export const updateTodoSchema = z.object({
   title: z.string().optional(),
   description: z.string().optional(),
+  done: z.boolean().optional(),
 });
